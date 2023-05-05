@@ -1,6 +1,7 @@
 from data import db_session
 from data.users import User
-from data.jobs import Job
+from data.jobs import Jobs
+from data.department import Department
 import datetime
 
 
@@ -44,7 +45,7 @@ user3.speciality = 'инженер по жизнеобеспечению'
 user3.address = 'module_4'
 user3.email = 'bessonov@mars.org'
 
-job1 = Job()
+job1 = Jobs()
 job1.team_leader = 1
 job1.job = 'deployment of residential modules 1 and 2'
 job1.work_size = 15
@@ -52,9 +53,25 @@ job1.collaborators = '2, 3'
 start_date = datetime.datetime.now()
 job1.is_finished = False
 
+job2 = Jobs()
+job2.team_leader = 1
+job2.job = 'deployment of residential modules 1 and 2'
+job2.work_size = 30
+job2.collaborators = '2, 3'
+start_date = datetime.datetime.now()
+job2.is_finished = True
+
+department = Department()
+department.title = "first"
+department.chief = 1
+department.members = "2, 3"
+department.email = "none@none.com"
+
 session.add(captain)
 session.add(user1)
 session.add(user2)
 session.add(user3)
 session.add(job1)
+session.add(job2)
+session.add(department)
 session.commit()

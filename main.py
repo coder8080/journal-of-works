@@ -1,29 +1,29 @@
+import sqlalchemy
 from flask import Flask, render_template
 from sqlalchemy.orm import Session
-from data import db_session
+from data.db_session import *
 from data.users import User
-from data.jobs import Job
+from data.jobs import Jobs
+from data.department import Department
 
-db_session.global_init('db/database.db')
-session = db_session.create_session()
+db_name = input()
 
-app = Flask(__name__)
-
-
-@app.route('/index')
-@app.route('/')
-def index():
-    works = []
-    for work in session.query(Job).all():
-        leader_id = work.team_leader
-        leader = session.query(User).filter(User.id == leader_id).first()
-        leader_name = leader.name + ' ' + leader.surname
-        new_work = work
-        new_work.leader_name = leader_name
-        works.append(new_work)
-    params = {'works': works}
-    return render_template('index.html', **params)
+global_init(db_name)
+session = create_session()
 
 
-if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+first_department = session.query(Department).get(1)
+user_ids = set([*first_department.members.split(', '), first_department.chief])
+for user_id in user_ids:
+    sum_worked = 0
+    # берём все задачи, где пользователь - тимлид
+    for job in session.query(Jobs).all():
+        print([el.strip() for
+               el in job.collaborators.split(',')])
+        if (job.team_leader == user_id or str(user_id) in [el.strip() for
+                                                           el in job.collaborators.split(',')])\
+                and job.is_finished:
+            sum_worked += job.work_size
+    # if sum_worked > 25:
+    user = session.query(User).get(user_id)
+    print(user.surname, user.name, sum_worked)

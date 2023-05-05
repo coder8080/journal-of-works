@@ -3,7 +3,7 @@ from .db_session import SqlAlchemyBase
 import datetime
 
 
-class Job(SqlAlchemyBase):
+class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
 
     id = sqlalchemy.Column(
